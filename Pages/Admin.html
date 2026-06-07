@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — L-Corporation </title>
+
+  <!-- Bootstrap 5.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Google Fonts: Mulish + Space Mono -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- CSS riêng của trang admin -->
+  <link rel="stylesheet" href="../Css/Admin.css" />
+  <!-- CSS chatbot AI -->
+  <link rel="stylesheet" href="../Css/admin-chatbot.css" />
+
+</head>
+
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+      <div>
+        <div class="logo-text">L-Corparation</div>
+        <div class="logo-sub">Admin Dashboard</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- Nhóm tổng quan -->
+      <div class="nav-section-title">Tổng quan</div>
+      <a class="nav-item active" data-page="products" onclick="switchPage('products')">
+        <i class="fa-solid fa-box"></i> Sản phẩm
+        <span class="nav-badge" id="sidebarProductCount">—</span>
+      </a>
+
+      <a class="nav-item" data-page="orders" onclick="switchPage('orders')">
+        <i class="fa-solid fa-receipt"></i> Đơn hàng
+        <span class="nav-badge" id="sidebarOrderCount" style="background:#F57C00">—</span>
+      </a>
+
+      <a class="nav-item" data-page="consultations" onclick="switchPage('consultations')">
+        <i class="fa-solid fa-headset"></i> Tư vấn
+      </a>
+
+      <!-- Lọc nhanh theo danh mục -->
+      <div class="nav-section-title" style="margin-top:8px">Danh mục xe</div>
+      <a class="nav-item" onclick="filterByCategory('car')">
+        <i class="fa-solid fa-car"></i> Ô tô điện
+      </a>
+      <a class="nav-item" onclick="filterByCategory('scooter')">
+        <i class="fa-solid fa-motorcycle"></i> Xe máy điện
+      </a>
+      <a class="nav-item" onclick="filterByCategory('car_acc')">
+        <i class="fa-solid fa-wrench"></i> Phụ kiện ô tô
+      </a>
+      <a class="nav-item" onclick="filterByCategory('scooter_acc')">
+        <i class="fa-solid fa-tools"></i> Phụ kiện xe máy
+      </a>
+      <a class="nav-item" onclick="filterByCategory('lifestyle')">
+        <i class="fa-solid fa-tshirt"></i> Lifestyle
+      </a>
+
+      <!-- Hỗ trợ Admin — NẰM TRONG <nav> -->
+      <div class="nav-section-title" style="margin-top:8px">Hỗ trợ Admin</div>
+      <a class="nav-item" data-page="chat" onclick="window.AdminChatbot && window.AdminChatbot.open()">
+        <i class="fa-solid fa-robot"></i> Chat với AI
+        <span class="nav-badge" id="alertBadge" style="background:#E53935;display:none">0</span>
+      </a>
+      <a class="nav-item" data-page="finance" onclick="switchPage('finance')">
+        <i class="fa-solid fa-chart-line"></i> Báo cáo tài chính
+      </a>
+      <a class="nav-item" data-page="insight" onclick="switchPage('insight')">
+        <i class="fa-solid fa-lightbulb"></i> Phân tích bán hàng
+      </a>
+      <a class="nav-item" data-page="importer" onclick="switchPage('importer')">
+        <i class="fa-solid fa-file-import"></i> Nhập sản phẩm AI
+      </a>
+    </nav>
+
+    <!-- Thông tin admin + nút đăng xuất -->
+    <div class="sidebar-footer">
+      <div class="admin-toggle" onclick="toggleAdminPanel()">
+        <div class="admin-avatar" id="adminAvatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name" id="adminName">Admin</div>
+          <div class="admin-role">Administrator</div>
+        </div>
+        <i class="fa-solid fa-chevron-up" id="adminChevron"
+          style="font-size:11px; color:var(--text-dim); transition:transform 0.3s;"></i>
+      </div>
+
+      <div class="admin-panel" id="adminPanel">
+        <div class="admin-stats-row">
+          <div class="admin-stat-box">
+            <div class="admin-stat-val" id="statOrdersToday">—</div>
+            <div class="admin-stat-lbl">Đơn hôm nay</div>
+          </div>
+          <div class="admin-stat-box">
+            <div class="admin-stat-val danger" id="statConsultNew">—</div>
+            <div class="admin-stat-lbl">Tư vấn mới</div>
+          </div>
+        </div>
+        <div class="admin-date-row">
+          <i class="fa-solid fa-calendar"></i>
+          <span id="adminDate">--</span>
+        </div>
+        <div class="admin-date-row">
+          <i class="fa-solid fa-clock"></i>
+          Đăng nhập lúc <span id="adminLoginTime">--</span>
+        </div>
+        <div class="admin-date-row">
+          <i class="fa-solid fa-wifi"></i>
+          <span class="admin-online-dot"></span> Đang hoạt động
+        </div>
+        <a href="../Pages/index.html" class="btn-sidebar-home">
+          <i class="fa-solid fa-house"></i> Xem trang chủ
+          <i class="fa-solid fa-arrow-up-right-from-square btn-sidebar-external"></i>
+        </a>
+        <button class="btn-sidebar-logout" onclick="AuthAPI.logout().then(()=>location.href='index.html')">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== TOPBAR ===== -->
+  <header class="topbar">
+    <h1 class="topbar-title" id="pageTitle">Quản lý <span>Sản phẩm</span></h1>
+    <div class="topbar-actions">
+      <button class="btn-primary-green" onclick="openProductModal()">
+        <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+
+    <!-- STAT CARDS -->
+    <div class="row g-3 mb-4" id="statsRow">
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" style="--accent-bar: #4CAF50">
+          <div class="stat-label">Tổng sản phẩm</div>
+          <div class="stat-value" id="statTotal">—</div>
+          <i class="fa-solid fa-box stat-icon"></i>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" style="--accent-bar: #2196F3">
+          <div class="stat-label">Ô tô điện</div>
+          <div class="stat-value" id="statCars">—</div>
+          <i class="fa-solid fa-car stat-icon"></i>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" style="--accent-bar: #9C27B0">
+          <div class="stat-label">Xe máy điện</div>
+          <div class="stat-value" id="statScooters">—</div>
+          <i class="fa-solid fa-motorcycle stat-icon"></i>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card" style="--accent-bar: #FF9800">
+          <div class="stat-label">Phụ kiện</div>
+          <div class="stat-value" id="statAccessories">—</div>
+          <i class="fa-solid fa-puzzle-piece stat-icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- BẢNG SẢN PHẨM -->
+    <div class="admin-card" id="pageProducts">
+      <div class="admin-card-header">
+        <i class="fa-solid fa-box" style="color:var(--primary-light)"></i>
+        <h5>Danh sách sản phẩm</h5>
+        <div class="card-actions">
+          <button class="btn-outline-green" onclick="exportCSV()">
+            <i class="fa-solid fa-download"></i> Xuất CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Tìm theo tên, mã sản phẩm..." />
+        </div>
+        <select class="filter-select" id="categoryFilter">
+          <option value="">Tất cả danh mục</option>
+          <option value="car">Ô tô điện</option>
+          <option value="scooter">Xe máy điện</option>
+          <option value="car_acc">Phụ kiện ô tô</option>
+          <option value="scooter_acc">Phụ kiện xe máy</option>
+          <option value="lifestyle">Lifestyle</option>
+        </select>
+        <select class="filter-select" id="statusFilter">
+          <option value="">Tất cả trạng thái</option>
+          <option value="active">Đang bán</option>
+          <option value="inactive">Ẩn</option>
+        </select>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Danh mục</th>
+              <th>Giá</th>
+              <th>Tồn kho</th>
+              <th>Trạng thái</th>
+              <th>Cập nhật</th>
+              <th style="text-align:right">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody">
+            <tr class="loading-row">
+              <td colspan="7">
+                <div class="spinner"></div>
+                Đang tải dữ liệu từ Supabase...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-wrap">
+        <div class="pagination-info" id="paginationInfo">—</div>
+        <div class="pagination-btns" id="paginationBtns"></div>
+      </div>
+    </div>
+
+    <!-- BẢNG ĐƠN HÀNG -->
+    <div class="admin-card" id="pageOrders" style="display:none">
+      <div class="admin-card-header">
+        <i class="fa-solid fa-receipt" style="color:var(--warning)"></i>
+        <h5>Danh sách đơn hàng</h5>
+        <div class="card-actions">
+          <button class="btn-outline-green" onclick="loadOrders()">
+            <i class="fa-solid fa-rotate-right"></i> Làm mới
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="ordersSearchInput" placeholder="Tìm theo tên, SĐT, mã đơn..."
+            oninput="applyOrdersFilters()" />
+        </div>
+        <select class="filter-select" id="ordersStatusFilter" onchange="applyOrdersFilters()">
+          <option value="">Tất cả trạng thái</option>
+          <option value="pending">Chờ xác nhận</option>
+          <option value="confirmed">Đã xác nhận</option>
+          <option value="processing">Đang xử lý</option>
+          <option value="shipping">Đang giao</option>
+          <option value="completed">Hoàn thành</option>
+          <option value="cancelled">Đã huỷ</option>
+        </select>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Mã đơn</th>
+              <th>Khách hàng</th>
+              <th>Sản phẩm</th>
+              <th>Tổng tiền</th>
+              <th>Trạng thái</th>
+              <th>Cập nhật</th>
+              <th style="text-align:right">Chi tiết</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <tr class="loading-row">
+              <td colspan="7">
+                <div class="spinner"></div>
+                Đang tải đơn hàng...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-wrap">
+        <div class="pagination-info" id="ordersPaginationInfo">—</div>
+        <div class="pagination-btns" id="ordersPaginationBtns"></div>
+      </div>
+    </div>
+
+    <!-- PAGE TÀI CHÍNH -->
+    <div id="pageFinance" style="display:none; padding:20px"></div>
+
+    <!-- PAGE PHÂN TÍCH BÁN HÀNG -->
+    <div id="pageInsight" style="display:none; padding:20px"></div>
+
+    <!-- PAGE NHẬP SẢN PHẨM AI -->
+    <div id="pageImporter" style="display:none; padding:20px"></div>
+
+  </main>
+
+  <!-- ===== MODAL THÊM / SỬA SẢN PHẨM ===== -->
+  <div class="modal fade" id="productModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalTitle">Thêm sản phẩm mới</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" id="editProductId" />
+
+          <div class="row g-3">
+            <div class="col-md-8">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Mã sản phẩm *</label>
+                  <input type="text" class="form-control" id="fCode" placeholder="vf3, sct-001..." />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Tên sản phẩm *</label>
+                  <input type="text" class="form-control" id="fName" placeholder="VF 3, Mũ Bảo Hiểm..." />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Danh mục *</label>
+                  <select class="form-select" id="fCategory" onchange="handleCategoryChange()">
+                    <option value="">— Chọn danh mục —</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Giá bán (VNĐ) *</label>
+                  <input type="number" class="form-control" id="fPrice" placeholder="240000000" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Giá gốc (VNĐ)</label>
+                  <input type="number" class="form-control" id="fPriceOld" placeholder="270000000" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Tồn kho</label>
+                  <input type="number" class="form-control" id="fStock" placeholder="0" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Giảm giá (%)</label>
+                  <input type="number" class="form-control" id="fDiscount" placeholder="0" min="0" max="100" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">URL hình ảnh</label>
+                  <input type="text" class="form-control" id="fImage" placeholder="https://..."
+                    oninput="previewImage()" />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Mô tả</label>
+                  <textarea class="form-control" id="fDesc" rows="3" placeholder="Mô tả sản phẩm..."></textarea>
+                </div>
+              </div>
+
+              <div id="vehicleFields" style="display:none">
+                <hr style="border-color:var(--border);margin:20px 0">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label" style="color:var(--primary-light)">
+                      <i class="fa-solid fa-car me-1"></i>Thông số xe
+                    </label>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Phạm vi (km)</label>
+                    <input type="number" class="form-control" id="fRange" placeholder="400" />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Số ghế</label>
+                    <input type="number" class="form-control" id="fSeats" placeholder="5" />
+                  </div>
+                  <div id="carOnlyFields">
+                    <div class="row g-3">
+                      <div class="col-md-3">
+                        <label class="form-label">Công suất (kW)</label>
+                        <input type="number" class="form-control" id="fPower" placeholder="260" />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">0-100 km/h</label>
+                        <input type="text" class="form-control" id="fAccel" placeholder="5.9s" />
+                      </div>
+                    </div>
+                  </div>
+                  <div id="scooterOnlyFields" style="display:none">
+                    <div class="row g-3">
+                      <div class="col-md-3">
+                        <label class="form-label">Tốc độ tối đa (km/h)</label>
+                        <input type="number" class="form-control" id="fSpeed" placeholder="70" />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Thời gian sạc</label>
+                        <input type="text" class="form-control" id="fCharge" placeholder="4.5h" />
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Chống nước</label>
+                        <input type="text" class="form-control" id="fWaterproof" placeholder="IP67" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Link chi tiết</label>
+                    <input type="text" class="form-control" id="fLink" placeholder="#vf3-details" />
+                  </div>
+                </div>
+              </div>
+
+              <div id="accessoryFields" style="display:none">
+                <hr style="border-color:var(--border);margin:20px 0">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label" style="color:var(--accent)">
+                      <i class="fa-solid fa-puzzle-piece me-1"></i>Thông tin phụ kiện
+                    </label>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Tương thích xe</label>
+                    <input type="text" class="form-control" id="fCompatible" placeholder="vf3, all, viper..." />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Tên xe tương thích</label>
+                    <input type="text" class="form-control" id="fCompatibleName" placeholder="VinFast VF 3" />
+                  </div>
+                </div>
+              </div>
+
+              <div id="specsEditor" style="display:none">
+                <hr style="border-color:var(--border);margin:20px 0">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                  <label class="form-label mb-0" style="color:var(--text-muted)">Thông số kỹ thuật chi tiết</label>
+                  <button type="button" class="btn-outline-green" onclick="addSpecRow()"
+                    style="padding:6px 12px;font-size:12px">
+                    <i class="fa-solid fa-plus"></i> Thêm dòng
+                  </button>
+                </div>
+                <div id="specsContainer"></div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Xem trước ảnh</label>
+              <div class="img-preview-wrap mb-3" id="imgPreviewWrap">
+                <div class="img-placeholder">
+                  <i class="fa-solid fa-image"></i>
+                  <span>Nhập URL ảnh để xem trước</span>
+                </div>
+              </div>
+
+              <label class="form-label">Cài đặt</label>
+              <div
+                style="background:var(--bg-input);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="fActive" checked />
+                  <label class="form-check-label" style="font-size:13px;color:var(--text)" for="fActive">Đang bán (hiển
+                    thị)</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="fFeatured" />
+                  <label class="form-check-label" style="font-size:13px;color:var(--text)" for="fFeatured">Nổi bật
+                    (carousel)</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fNew" />
+                  <label class="form-check-label" style="font-size:13px;color:var(--text)" for="fNew">Sản phẩm
+                    mới</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel-confirm" data-bs-dismiss="modal">Huỷ</button>
+          <button type="button" class="btn-primary-green" onclick="saveProduct()">
+            <i class="fa-solid fa-floppy-disk"></i> Lưu sản phẩm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CHI TIẾT ĐƠN HÀNG -->
+  <div class="modal fade" id="orderDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fa-solid fa-receipt me-2" style="color:var(--primary)"></i>
+            Chi tiết đơn hàng
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="orderDetailContent"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel-confirm" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM XOÁ -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <h5>Xác nhận xoá?</h5>
+      <p id="confirmMsg">Sản phẩm sẽ bị ẩn khỏi website. Bạn có thể khôi phục sau.</p>
+      <div class="confirm-btns">
+        <button class="btn-cancel-confirm" onclick="closeConfirm()">Huỷ bỏ</button>
+        <button class="btn-confirm-delete" id="confirmDeleteBtn">Xác nhận xoá</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase client wrapper -->
+  <script src="../JavaScript/Core/Supabase-client.js"></script>
+
+  <script src="../JavaScript/Pages/admin-ui.js"></script>
+  <script src="../JavaScript/Pages/admin-stats.js"></script>
+  <script src="../JavaScript/Pages/admin-products.js"></script>
+  <script src="../JavaScript/Pages/admin-orders.js"></script>
+  <script src="../JavaScript/Pages/admin.js"></script>
+
+  <script src="../JavaScript/Pages/Admin/admin-chatbot-router.js"></script>
+  <script src="../JavaScript/Pages/Admin/admin-finance.js"></script>
+  <script src="../JavaScript/Pages/Admin/admin-sales-insight.js"></script>
+  <script src="../JavaScript/Pages/Admin/admin-product-importer.js"></script>
+  <script src="../JavaScript/Pages/Admin/admin-alert-engine.js"></script>
+  <script src="../JavaScript/Pages/admin-chatbot.js"></script>
+
+</body>
+
+</html>

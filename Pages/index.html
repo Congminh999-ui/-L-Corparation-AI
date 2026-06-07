@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology Green Energy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../Css/style.css">
+    <link rel="stylesheet" href="../Css/chatbot.css">
+    <link rel="stylesheet" href="../Css/charging-station.css">
+    <link rel="stylesheet" href="../Css/history.css">
+    <link rel="stylesheet" href="../Css/news.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-light fixed-top" id="mainNavbar" data-bs-theme="light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-leaf me-2 brand-icon"></i>
+                <span class="brand-text text-uppercase">L-Corparation</span>
+            </a>
+
+            <div class="d-flex align-items-center navbar-actions ms-auto order-lg-last ms-lg-3">
+                <div class="navbar-user-wrapper me-1">
+                    <button class="btn btn-icon-toggle" id="loginToggleBtn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+                <div class="navbar-cart-wrapper me-2">
+                    <button class="btn btn-cart-toggle" id="cartToggleBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </button>
+                </div>
+                <a href="#" class="btn btn-consultation d-none d-lg-flex" id="navConsultBtn"
+                    data-i18n="nav_consultation">Đăng ký tư vấn</a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-i18n="nav_home"></a>
+                    </li>
+                    <li class="nav-item dropdown mega-menu">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            data-bs-display="static" data-i18n="nav_vehicles"></a>
+                        <div class="dropdown-menu mega-menu-content p-0 m-0">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="mega-menu-title" data-i18n="cars_title"></h6>
+                                        <div class="carousel-wrapper">
+                                            <button class="carousel-btn prev"><i
+                                                    class="fas fa-chevron-left"></i></button>
+                                            <div class="carousel-view">
+                                                <div class="carousel-track" id="cars-track"></div>
+                                            </div>
+                                            <button class="carousel-btn next"><i
+                                                    class="fas fa-chevron-right"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-3">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6 class="mega-menu-title" data-i18n="scooters_title"></h6>
+                                        <div class="carousel-wrapper">
+                                            <button class="carousel-btn prev"><i
+                                                    class="fas fa-chevron-left"></i></button>
+                                            <div class="carousel-view">
+                                                <div class="carousel-track" id="scooters-track"></div>
+                                            </div>
+                                            <button class="carousel-btn next"><i
+                                                    class="fas fa-chevron-right"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#accessory" data-i18n="nav_accessory"></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#charging" data-i18n="nav_charging"></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about-us" data-i18n="nav_about"></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav_contact"></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section" id="hero">
+        <video autoplay muted loop playsinline class="hero-video lazy-load"
+            poster="https://static-cms-prod.vinfastauto.com/ve-chung-toi-video-poster_1664352279.jpg"
+            data-src="https://storage.googleapis.com/vinfast-data-01/The%20company%20behind%20VinFast%20electric%20cars.mp4">
+            <source
+                data-src="https://storage.googleapis.com/vinfast-data-01/The%20company%20behind%20VinFast%20electric%20cars.mp4"
+                type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="container hero-container">
+            <div class="hero-content-wrapper">
+                <h1 class="hero-main-title" data-i18n="hero_title"></h1>
+                <p class="hero-tagline" data-i18n="hero_subtitle"></p>
+                <div class="hero-cta-group">
+                    <a href="#featured-cars" class="hero-btn-primary" data-i18n="hero_btn_order"></a>
+                    <a href="#about-us" class="hero-btn-secondary" data-i18n="hero_btn_about"></a>
+                </div>
+            </div>
+        </div>
+        <a href="#featured-cars" class="section-scroll-indicator light">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </section>
+
+    <section class="featured-vehicle-section" id="featured-cars">
+        <a href="#featured-scooters" class="section-scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        <div class="container-fluid p-0 m-0">
+            <div class="featured-vehicle-wrapper">
+                <button class="spec-nav-btn prev" id="car-prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="featured-vehicle-content flex-grow-1 px-3 d-flex flex-column align-items-center w-100">
+                    <div class="featured-img-container mx-auto position-relative w-100 mb-2">
+                        <img src="" alt="Car Image" id="car-main-img" class="img-fluid mx-auto d-block"
+                            style="position: relative; z-index: 1;">
+                    </div>
+                    <div class="featured-info-container w-100 mt-2" id="car-info-box" style="max-width: 1000px;"></div>
+                    <div class="bullet-navigation text-center mt-4 pb-2" id="car-bullets"></div>
+                </div>
+                <button class="spec-nav-btn next" id="car-next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-vehicle-section" id="featured-scooters">
+        <a href="#accessory" class="section-scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        <div class="container-fluid p-0 m-0">
+            <div class="featured-vehicle-wrapper">
+                <button class="spec-nav-btn prev" id="scooter-prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="featured-vehicle-content flex-grow-1 px-3 d-flex flex-column align-items-center w-100">
+                    <div class="featured-img-container mx-auto position-relative w-100 mb-2">
+                        <img src="" alt="Scooter Image" id="scooter-main-img" class="img-fluid mx-auto d-block"
+                            style="position: relative; z-index: 1;">
+                    </div>
+                    <div class="featured-info-container w-100 mt-2" id="scooter-info-box" style="max-width: 1000px;">
+                    </div>
+                    <div class="bullet-navigation text-center mt-4 pb-2" id="scooter-bullets"></div>
+                </div>
+                <button class="spec-nav-btn next" id="scooter-next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section class="accessories-section" id="accessory">
+        <a href="#charging" class="section-scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        <div class="accessories-wrapper">
+            <aside class="accessories-sidebar">
+                <h3 class="accessories-sidebar-title" data-i18n="accessories_sidebar_title">Danh mục</h3>
+                <div class="accessories-sidebar-search">
+                    <div class="accessories-search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="accessories-search-input" id="accessories-search-input"
+                            placeholder="Tìm kiếm phụ kiện..." data-i18n-placeholder="accessories_search_placeholder">
+                        <button class="accessories-search-btn" id="accessories-search-btn"
+                            data-i18n="accessories_search_button">Tìm</button>
+                    </div>
+                </div>
+                <ul class="accessories-category-list" id="accessories-categories"></ul>
+            </aside>
+            <main class="accessories-main">
+                <div class="accessories-results-info">
+                    <span class="accessories-results-count">Tìm thấy <strong id="accessories-count">0</strong> sản
+                        phẩm</span>
+                </div>
+                <div class="accessories-grid" id="accessories-grid"></div>
+                <div class="accessories-load-more-wrapper">
+                    <button class="accessories-load-more-btn" id="accessories-load-more-btn"
+                        data-i18n="accessories_load_more">Xem thêm phụ kiện</button>
+                </div>
+                <div class="accessories-empty" id="accessories-empty" style="display: none;">
+                    <i class="fas fa-search"></i>
+                    <h4 data-i18n="accessories_empty_title">Không tìm thấy sản phẩm</h4>
+                    <p data-i18n="accessories_empty_text">Vui lòng thử từ khóa khác hoặc chọn danh mục khác</p>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <section class="charging-section-v2" id="charging">
+        <a href="#about-us" class="section-scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        <div class="container-fluid p-0">
+            <div class="charging-map-container">
+                <div class="charging-sidebar">
+                    <div class="charging-sidebar-header p-4 pb-0">
+                        <h2 class="sidebar-title-premium mb-2" data-i18n="nav_charging"></h2>
+                        <p class="sidebar-subtitle-premium text-muted mb-0" style="font-size: 0.85rem;"
+                            data-i18n="charging_subtitle"></p>
+                    </div>
+                    <div class="charging-search p-4 pb-0">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0"><i
+                                    class="fas fa-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 shadow-none ps-0"
+                                data-i18n-placeholder="charging_search_placeholder">
+                        </div>
+                    </div>
+                    <div class="charging-filter-pills">
+                        <button class="charging-pill active" data-filter="all" data-i18n="charging_label_all"></button>
+                        <button class="charging-pill" data-filter="fast" data-i18n="charging_label_fast"></button>
+                        <button class="charging-pill" data-filter="maintenance"
+                            data-i18n="charging_label_normal"></button>
+                    </div>
+                    <div class="charging-list-scroll">
+                        <div class="charging-station-card active" data-type="fast">
+                            <div class="card-status active" data-i18n="charging_status_active"></div>
+                            <h5 class="station-name">VinFast - Vincom Center Đồng Khởi</h5>
+                            <p class="station-address">45A Lý Tự Trọng, Bến Nghé, Quận 1, TP. Hồ Chí Minh</p>
+                            <div class="station-info-row">
+                                <span><i class="fas fa-bolt text-warning"></i> 8/8 Trụ</span>
+                                <span><i class="fas fa-map-marker-alt text-danger"></i> 0.5 km</span>
+                            </div>
+                            <div class="card-actions mt-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Vincom+Center+Dong+Khoi+VinFast"
+                                    target="_blank" class="text-decoration-none">
+                                    <button class="btn btn-sm btn-dark w-100"
+                                        data-i18n="charging_btn_direction"></button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="charging-station-card" data-type="fast">
+                            <div class="card-status active" data-i18n="charging_status_active"></div>
+                            <h5 class="station-name">VinFast - Landmark 81</h5>
+                            <p class="station-address">Vinhomes Central Park, 208 Nguyễn Hữu Cảnh, Bình Thạnh, TP. HCM
+                            </p>
+                            <div class="station-info-row">
+                                <span><i class="fas fa-bolt text-warning"></i> 12/12 Trụ</span>
+                                <span><i class="fas fa-map-marker-alt text-danger"></i> 2.8 km</span>
+                            </div>
+                            <div class="card-actions mt-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=VinFast+Landmark+81"
+                                    target="_blank" class="text-decoration-none">
+                                    <button class="btn btn-sm btn-dark w-100"
+                                        data-i18n="charging_btn_direction"></button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="charging-station-card" data-type="fast">
+                            <div class="card-status active" data-i18n="charging_status_active"></div>
+                            <h5 class="station-name">VinFast - Vincom Mega Mall Thảo Điền</h5>
+                            <p class="station-address">161 Xa lộ Hà Nội, Thảo Điền, Quận 2, TP. Hồ Chí Minh</p>
+                            <div class="station-info-row">
+                                <span><i class="fas fa-bolt text-warning"></i> 6/6 Trụ</span>
+                                <span><i class="fas fa-map-marker-alt text-danger"></i> 4.5 km</span>
+                            </div>
+                            <div class="card-actions mt-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Vincom+Mega+Mall+Thao+Dien+VinFast"
+                                    target="_blank" class="text-decoration-none">
+                                    <button class="btn btn-sm btn-dark w-100"
+                                        data-i18n="charging_btn_direction"></button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="charging-station-card" data-type="maintenance">
+                            <div class="card-status active" data-i18n="charging_status_active"></div>
+                            <h5 class="station-name">VinFast Service - 3S Phan Văn Trị</h5>
+                            <p class="station-address">464 Phan Văn Trị, Phường 7, Quận Gò Vấp, TP. Hồ Chí Minh</p>
+                            <div class="station-info-row">
+                                <span><i class="fas fa-wrench text-primary"></i> 24/7 Support</span>
+                                <span><i class="fas fa-map-marker-alt text-danger"></i> 3.2 km</span>
+                            </div>
+                            <div class="card-actions mt-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=VinFast+Service+Phan+Van+Tri"
+                                    target="_blank" class="text-decoration-none">
+                                    <button class="btn btn-sm btn-dark w-100"
+                                        data-i18n="charging_btn_direction"></button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="charging-station-card" data-type="maintenance">
+                            <div class="card-status active" data-i18n="charging_status_active"></div>
+                            <h5 class="station-name">VinFast Service - 3S Trần Hưng Đạo</h5>
+                            <p class="station-address">3-5 Trần Hưng Đạo, P. Nguyễn Thái Bình, Quận 1, TP. HCM</p>
+                            <div class="station-info-row">
+                                <span><i class="fas fa-wrench text-primary"></i> Leading Tech</span>
+                                <span><i class="fas fa-map-marker-alt text-danger"></i> 1.2 km</span>
+                            </div>
+                            <div class="card-actions mt-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=VinFast+Service+Tran+Hung+Dao"
+                                    target="_blank" class="text-decoration-none">
+                                    <button class="btn btn-sm btn-dark w-100"
+                                        data-i18n="charging_btn_direction"></button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="charging-map-display">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d125412.3!2d106.6!3d10.8!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1zVHLhuqFtIHPhuqFjIFZpbiNGYXN0IFRQLiBI4buTIENow60gTWluaA!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s"
+                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <div class="map-overlay-badge">
+                        <i class="fas fa-charging-station me-2"></i> 200+ Charging Stations In HCMC
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cs-root"></section>
+    <section id="history-section-root"></section>
+    <section id="news-section-root"></section>
+
+    <div class="modal fade" id="vehicleSpecModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="modal-header bg-light border-0 py-3 sticky-top">
+                    <h5 class="modal-title fw-bold text-uppercase ls-1" id="vehicleSpecModalLabel"
+                        data-i18n="modal_title"></h5>
+                    <button type="button" class="btn-close p-3" data-bs-dismiss="modal" aria-label="Close"
+                        style="background-color: #eee; border-radius: 50%; opacity: 0.8;"></button>
+                </div>
+                <div class="modal-body p-4 p-lg-5">
+                    <div class="row" id="specsModalContent"></div>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal"
+                        data-i18n="modal_close"></button>
+                    <a href="#" class="btn btn-dark rounded-pill px-5 py-2 fw-bold shadow-sm" id="modalPreOrderBtn"
+                        data-i18n="modal_deposit" data-bs-dismiss="modal"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section id="about-us" class="py-5 position-relative">
+        <a href="#contact" class="section-scroll-indicator light"><i class="fas fa-chevron-down"></i></a>
+        <div class="about-us-bg-container">
+            <img src="" data-src="../Data/Aboutus.webp" alt="About Us Background" class="about-us-bg-img lazy-load">
+            <div class="about-us-overlay"></div>
+        </div>
+        <div class="container position-relative z-2">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <p class="text-uppercase fw-bold text-primary mb-2" data-i18n="about_tagline"></p>
+                    <h2 class="mb-3 fw-bold" data-i18n="about_title"></h2>
+                    <p class="lead text-light mb-3" data-i18n="about_subtitle"></p>
+                    <div class="about-content">
+                        <div class="about-text-card">
+                            <p class="mb-3 text-light" data-i18n-html="about_p1"></p>
+                            <div class="about-more-content collapse" id="aboutMoreContent">
+                                <p class="mb-3 text-light" data-i18n-html="about_p2"></p>
+                                <p class="mb-3 text-light" data-i18n-html="about_p3"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-link text-light p-0 mt-2" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#aboutMoreContent" aria-expanded="false" id="aboutReadMoreBtn">
+                        <span data-i18n="about_read_more"></span>
+                        <i class="fas fa-chevron-down ms-2"></i>
+                    </button>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="btn btn-primary btn-lg rounded-pill px-4" data-i18n="about_learn_more"></a>
+                        <a href="#" class="btn btn-outline-light btn-lg rounded-pill px-4"
+                            data-i18n="about_contact_us"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white pt-5 pb-3" id="contact">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-leaf me-2" style="font-size: 1.75rem; color: #4CAF50;"></i>
+                        <h5 class="mb-0 fw-bold">L-Corparation</h5>
+                    </div>
+                    <p class="text-secondary mb-3" data-i18n="footer_tagline"></p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
+                                class="fab fa-twitter"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle"><i
+                                class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3" data-i18n="footer_products"></h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#featured-cars" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_electric_cars"></a></li>
+                        <li><a href="#featured-scooters" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_e_scooters"></a></li>
+                        <li><a href="#accessory" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_accessories"></a></li>
+                        <li><a href="#charging" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_chargers"></a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3" data-i18n="footer_support"></h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_help_center"></a></li>
+                        <li><a href="#" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_shipping"></a></li>
+                        <li><a href="#" class="text-secondary text-decoration-none footer-link"
+                                data-i18n="footer_returns"></a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-3" data-i18n="footer_contact"></h6>
+                    <p class="text-secondary mb-2"><i class="fas fa-phone me-2"></i><span
+                            data-i18n="footer_phone"></span></p>
+                    <p class="text-secondary mb-2"><i class="fas fa-envelope me-2"></i><span
+                            data-i18n="footer_email"></span></p>
+                    <p class="text-secondary"><i class="fas fa-map-marker-alt me-2"></i><span
+                            data-i18n="footer_address"></span></p>
+                </div>
+            </div>
+            <hr class="bg-secondary my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-secondary mb-0"><span data-i18n="footer_copyright"></span></p>
+                </div>
+                <div
+                    class="col-md-6 text-center text-md-end d-flex align-items-center justify-content-center justify-content-md-end gap-3">
+                    <a href="#" class="text-secondary text-decoration-none footer-link" data-i18n="footer_privacy"></a>
+                    <a href="#" class="text-secondary text-decoration-none footer-link" data-i18n="footer_terms"></a>
+                    <a href="#" class="text-secondary text-decoration-none footer-link" data-i18n="footer_cookies"></a>
+                    <a href="#" class="footer-lang-toggle d-inline-flex align-items-center gap-2 text-decoration-none"
+                        id="lang-toggle">
+                        <img src="https://flagcdn.com/w40/vn.png" id="lang-flag" alt="VI" class="footer-lang-flag">
+                        <span class="footer-lang-label" id="lang-label">Tiếng Việt</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Popup 1: Promo Banner -->
+    <div class="promo-popup-overlay" id="promoPopupOverlay">
+        <div class="promo-popup promo-popup--banner" id="promoPopup">
+            <div class="promo-banner-container">
+                <button class="promo-popup-close" id="promoPopupClose" aria-label="Close"><i
+                        class="fas fa-times"></i></button>
+                <a href="#featured-cars" class="promo-banner-link">
+                    <img src="" data-src="../Data/ô tô PC.webp" alt="Ưu đãi độc quyền"
+                        class="promo-popup-img lazy-load">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup 2: Consultation Form -->
+    <div class="promo-popup-overlay" id="consultPopupOverlay">
+        <div class="promo-popup promo-popup--consult" id="consultPopup">
+            <button class="promo-popup-close" id="consultPopupClose" aria-label="Close"><i
+                    class="fas fa-times"></i></button>
+            <div class="promo-popup-inner">
+                <div class="promo-popup-form">
+                    <div class="popup-form-header">
+                        <i class="fas fa-leaf popup-brand-icon"></i>
+                        <span class="popup-brand-name">L-Corparation</span>
+                    </div>
+                    <h3 class="popup-form-title" data-i18n="popup_form_title">Đăng ký nhận tư vấn</h3>
+                    <p class="popup-form-desc" data-i18n="popup_form_desc">Quý khách vui lòng đăng ký để nhận tư vấn sản
+                        phẩm, ưu đãi mới nhất.</p>
+                    <form id="consultForm" class="popup-form">
+                        <div class="popup-form-group">
+                            <input type="text" id="consultName" placeholder=" " required>
+                            <label data-i18n="popup_name">Họ và tên *</label>
+                        </div>
+                        <div class="popup-form-group">
+                            <input type="tel" id="consultPhone" placeholder=" " required>
+                            <label data-i18n="popup_phone">Số điện thoại *</label>
+                        </div>
+                        <div class="popup-form-group">
+                            <input type="email" id="consultEmail" placeholder=" " required>
+                            <label data-i18n="popup_email">Email *</label>
+                        </div>
+                        <div class="popup-vehicle-group">
+                            <label class="popup-select-label" data-i18n="popup_vehicle_label">Dòng xe quan tâm</label>
+                            <div class="popup-select-wrapper">
+                                <select id="consultVehicleSelect" class="popup-select-input" required>
+                                    <option value="" disabled selected data-i18n="popup_select_placeholder">Chọn mẫu
+                                        xe...</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="popup-submit-btn" data-i18n="popup_submit">Đăng ký</button>
+                    </form>
+                </div>
+                <div class="promo-popup-banner" id="consultBanner">
+                    <img src="" data-src="" alt="Xe" class="promo-popup-img lazy-load" id="consultVehicleImg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup 3: Order Form/Deposit -->
+    <div class="promo-popup-overlay" id="orderPopupOverlay">
+        <div class="promo-popup promo-popup--order" id="orderPopup">
+            <button class="promo-popup-close" id="orderPopupClose" aria-label="Close"><i
+                    class="fas fa-times"></i></button>
+            <div class="promo-popup-inner">
+                <div class="promo-popup-form">
+                    <div class="popup-form-header">
+                        <i class="fas fa-shopping-bag popup-brand-icon"></i>
+                        <span class="popup-brand-name" data-i18n="deposit_customer_info">Thông tin đơn hàng</span>
+                    </div>
+                    <h3 class="popup-form-title" data-i18n="deposit_title">Đặt cọc mẫu xe yêu thích</h3>
+                    <p class="popup-form-desc" data-i18n="deposit_subtitle">Hoàn tất biểu mẫu dưới đây để chúng tôi giữ
+                        chỗ ưu đãi tốt nhất cho bạn.</p>
+                    <form id="orderForm" class="popup-form">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="popup-form-group">
+                                    <input type="text" id="orderName" placeholder=" " required>
+                                    <label data-i18n="deposit_name">Họ và tên *</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="popup-form-group">
+                                    <input type="tel" id="orderPhone" placeholder=" " required>
+                                    <label data-i18n="deposit_phone">Số điện thoại *</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="popup-form-group mt-3">
+                            <input type="email" id="orderEmail" placeholder=" " required>
+                            <label data-i18n="deposit_email">Email *</label>
+                        </div>
+                        <div class="popup-vehicle-group mt-3">
+                            <label class="popup-select-label" data-i18n="deposit_vehicle_model">Lựa chọn mẫu xe</label>
+                            <div class="popup-select-wrapper">
+                                <select id="orderVehicleSelect" class="popup-select-input" required>
+                                    <option value="" disabled selected data-i18n="popup_select_placeholder">Chọn mẫu
+                                        xe...</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="popup-payment-group mt-3">
+                            <label class="popup-select-label">Phương thức đặt cọc</label>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="bank" checked>
+                                    <div class="payment-box"><i class="fas fa-university"></i><span>Chuyển khoản</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="card">
+                                    <div class="payment-box"><i class="fas fa-credit-card"></i><span>Thẻ tín dụng</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="momo">
+                                    <div class="payment-box">
+                                        <img src="../Data/Images/unnamed.png" alt="Momo"
+                                            style="width: 24px; height: 24px; object-fit: contain;">
+                                        <span>Ví MoMo</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="store">
+                                    <div class="payment-box"><i class="fas fa-store"></i><span>Tại showroom</span></div>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="popup-submit-btn mt-4" data-i18n="deposit_btn">Hoàn tất đặt
+                            cọc</button>
+                    </form>
+                </div>
+                <div class="promo-popup-banner" id="orderBanner">
+                    <img src="" data-src="" alt="Order Preview" class="promo-popup-img lazy-load" id="orderVehicleImg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup 4: Login & Register Form -->
+    <div class="auth-popup-overlay" id="loginPopupOverlay">
+        <div class="auth-popup auth-popup--login" id="loginPopup">
+            <button class="auth-popup-close" id="loginPopupClose" aria-label="Close"><i
+                    class="fas fa-times"></i></button>
+            <div class="auth-popup-inner">
+                <div class="auth-popup-form w-100">
+                    <div id="loginSuccessState" style="display: none;">
+                        <div class="profile-header text-center mb-4">
+                            <div class="profile-avatar-wrapper mb-3">
+                                <img id="profileAvatar" src="../Data/Images/nguoi.jpg" alt="Avatar"
+                                    class="profile-avatar shadow-sm">
+                                <label for="changeAvatar" class="avatar-edit-badge"><i
+                                        class="fas fa-camera"></i></label>
+                                <input type="file" id="changeAvatar" hidden accept="image/*">
+                            </div>
+                            <h4 class="fw-bold mb-1" id="profileNameDisplay"></h4>
+                            <p class="text-muted small mb-0" id="profileEmailDisplay"></p>
+                        </div>
+                        <div class="profile-tabs mb-3 d-flex border-bottom">
+                            <button class="profile-tab active" data-tab="info">Thông tin chung</button>
+                            <button class="profile-tab" data-tab="security">Bảo mật</button>
+                        </div>
+                        <div id="tabContentInfo" class="profile-tab-content">
+                            <form id="profileInfoForm" class="row g-2">
+                                <div class="col-12">
+                                    <label class="x-small text-muted mb-1">Họ và tên</label>
+                                    <input type="text" class="form-control" id="profName" placeholder="Họ và tên"
+                                        required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="x-small text-muted mb-1">Ngày sinh</label>
+                                    <input type="date" class="form-control" id="profDOB">
+                                </div>
+                                <div class="col-12">
+                                    <label class="x-small text-muted mb-1">Số CCCD / CMND</label>
+                                    <input type="text" class="form-control" id="profCCCD"
+                                        placeholder="Số chứng minh nhân dân">
+                                </div>
+                                <div class="col-12">
+                                    <label class="x-small text-muted mb-1">Địa chỉ thường trú</label>
+                                    <textarea class="form-control" id="profAddress" rows="2"
+                                        placeholder="Địa chỉ liên hệ"></textarea>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold">Cập nhật thông
+                                        tin</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="tabContentSecurity" class="profile-tab-content d-none">
+                            <form id="profileSecurityForm" class="row g-2">
+                                <div class="col-12">
+                                    <label class="x-small text-muted mb-1">Địa chỉ Email</label>
+                                    <input type="email" class="form-control" id="profEmail" readonly
+                                        style="background-color: #f8f9fa;">
+                                </div>
+                                <div class="col-12">
+                                    <label class="x-small text-muted mb-1">Mật khẩu mới</label>
+                                    <input type="password" class="form-control" id="profNewPass"
+                                        placeholder="Để trống nếu không đổi">
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold">Đổi mật
+                                        khẩu</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="mt-4 pt-3 border-top text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm w-100 rounded-pill py-2"
+                                id="logoutBtn">Đăng xuất tài khoản</button>
+                        </div>
+                    </div>
+                    <div id="loginFormState">
+                        <h2 class="popup-form-title text-center mb-3">Đăng nhập</h2>
+                        <form id="loginForm">
+                            <div class="form-group mb-2">
+                                <input type="email" class="form-control" id="loginEmail" placeholder="Email" required>
+                            </div>
+                            <div class="form-group mb-2 position-relative">
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Mật khẩu"
+                                    required>
+                                <i class="fas fa-eye position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                                    id="togglePassword" style="cursor: pointer;"></i>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="rememberMe">
+                                    <label class="form-check-label text-muted small" for="rememberMe">Ghi nhớ</label>
+                                </div>
+                                <a href="#" class="text-decoration-none small text-muted">Quên mật khẩu?</a>
+                            </div>
+                            <button type="submit" class="btn btn-login-primary w-100 py-2.5 mb-3">Đăng nhập</button>
+                        </form>
+                        <div class="text-center mb-2">
+                            <span class="small text-muted">Chưa có tài khoản?</span>
+                        </div>
+                        <button type="button" id="showRegisterBtn" class="btn btn-register-secondary w-100 py-2.5">Đăng
+                            ký tài khoản</button>
+                    </div>
+                    <div id="registerFormState" style="display: none;">
+                        <h2 class="popup-form-title text-center mb-3">Đăng ký</h2>
+                        <form id="registerForm">
+                            <div class="form-group mb-2">
+                                <input type="text" class="form-control" id="regUsername" placeholder="Họ và tên"
+                                    required>
+                            </div>
+                            <div class="form-group mb-2">
+                                <input type="email" class="form-control" id="regEmail" placeholder="Email" required>
+                            </div>
+                            <div class="form-group mb-2">
+                                <input type="password" class="form-control" id="regPassword" placeholder="Mật khẩu"
+                                    required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-2.5 mb-3">Đăng ký</button>
+                        </form>
+                        <div class="text-center">
+                            <button type="button" id="showLoginBtn"
+                                class="btn btn-link text-decoration-none text-muted small">Quay lại đăng nhập</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="#hero" class="mobile-nav-item active" data-nav="home">
+            <div class="mobile-nav-icon-pill"><i class="fas fa-home"></i></div>
+            <span data-i18n="mbn_home"></span>
+        </a>
+        <a href="#featured-cars" class="mobile-nav-item" data-nav="cars">
+            <div class="mobile-nav-icon-pill"><i class="fas fa-car"></i></div>
+            <span data-i18n="mbn_cars"></span>
+        </a>
+        <a href="#featured-scooters" class="mobile-nav-item" data-nav="scooters">
+            <div class="mobile-nav-icon-pill"><i class="fas fa-motorcycle"></i></div>
+            <span data-i18n="mbn_scooters"></span>
+        </a>
+        <a href="#accessory" class="mobile-nav-item" data-nav="accessory">
+            <div class="mobile-nav-icon-pill"><i class="fas fa-tags"></i></div>
+            <span data-i18n="mbn_accessory"></span>
+        </a>
+        <a href="#charging" class="mobile-nav-item" data-nav="charging">
+            <div class="mobile-nav-icon-pill"><i class="fas fa-bolt"></i></div>
+            <span data-i18n="mbn_charging"></span>
+        </a>
+        <a href="javascript:void(0)" class="mobile-nav-item" id="mobileCartBtn" data-nav="cart">
+            <div class="mobile-nav-icon-pill position-relative">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="mobileCartBadge">0</span>
+            </div>
+            <span data-i18n="mbn_cart"></span>
+        </a>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar-overlay" id="cartSidebarOverlay">
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-sidebar-header">
+                <h3 class="cart-sidebar-title"><i class="fas fa-shopping-cart me-2"></i>Giỏ hàng</h3>
+                <button class="cart-sidebar-close" id="cartSidebarClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-sidebar-content">
+                <div class="cart-items-container" id="cartItemsContainer">
+                    <div class="cart-empty-state">
+                        <i class="fas fa-shopping-basket mb-3"></i>
+                        <p>Giỏ hàng của bạn đang trống</p>
+                        <a href="#accessory" class="btn btn-outline-dark btn-sm rounded-pill mt-2">Mua sắm ngay</a>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-sidebar-footer" id="cartFooter" style="display: none;">
+                <div class="cart-summary">
+                    <div class="cart-summary-row">
+                        <span>Tạm tính:</span>
+                        <span class="cart-subtotal" id="cartSubtotal">0đ</span>
+                    </div>
+                    <div class="cart-summary-row">
+                        <span>Phí vận chuyển:</span>
+                        <span class="text-success">Miễn phí</span>
+                    </div>
+                    <hr>
+                    <div class="cart-summary-row total">
+                        <span>Tổng cộng:</span>
+                        <span class="cart-total-price" id="cartTotalPrice">0đ</span>
+                    </div>
+                </div>
+                <button class="btn btn-dark w-100 rounded-pill py-3 fw-bold mt-3" id="cartCheckoutBtn">
+                    THANH TOÁN NGAY
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Checkout Modal — ĐÃ THÊM FORM THÔNG TIN KHÁCH HÀNG -->
+    <div class="promo-popup-overlay" id="checkoutPopupOverlay">
+        <div class="promo-popup promo-popup--checkout" id="checkoutPopup">
+            <button class="promo-popup-close" id="checkoutPopupClose" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="checkout-modal-container">
+                <div class="checkout-header">
+                    <h2><i class="fas fa-file-invoice-dollar me-2" style="color: var(--primary-color);"></i>Thanh toán
+                        đơn hàng</h2>
+                </div>
+                <div class="checkout-body">
+                    <div class="row g-4">
+                        <!-- Left: Order Review -->
+                        <div class="col-lg-7">
+                            <div class="checkout-card mb-4">
+                                <h4 class="checkout-card-title">Sản phẩm đã chọn</h4>
+                                <div class="checkout-items-list" id="checkoutItemsList"></div>
+                            </div>
+
+                            <!-- ✅ FORM THÔNG TIN KHÁCH HÀNG — THÊM MỚI -->
+                            <div class="checkout-card">
+                                <h4 class="checkout-card-title">Thông tin giao hàng</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label
+                                            style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Họ
+                                            và tên *</label>
+                                        <input type="text" id="checkoutName" placeholder="Nguyễn Văn A"
+                                            style="width:100%;padding:10px 14px;border:1.5px solid #dee2e6;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s"
+                                            onfocus="this.style.borderColor='#198754'"
+                                            onblur="this.style.borderColor='#dee2e6'" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label
+                                            style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Số
+                                            điện thoại *</label>
+                                        <input type="tel" id="checkoutPhone" placeholder="0901234567"
+                                            style="width:100%;padding:10px 14px;border:1.5px solid #dee2e6;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s"
+                                            onfocus="this.style.borderColor='#198754'"
+                                            onblur="this.style.borderColor='#dee2e6'" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label
+                                            style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Email</label>
+                                        <input type="email" id="checkoutEmail" placeholder="email@example.com"
+                                            style="width:100%;padding:10px 14px;border:1.5px solid #dee2e6;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s"
+                                            onfocus="this.style.borderColor='#198754'"
+                                            onblur="this.style.borderColor='#dee2e6'" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label
+                                            style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Địa
+                                            chỉ giao hàng</label>
+                                        <input type="text" id="checkoutAddress"
+                                            placeholder="Số nhà, đường, quận, thành phố"
+                                            style="width:100%;padding:10px 14px;border:1.5px solid #dee2e6;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s"
+                                            onfocus="this.style.borderColor='#198754'"
+                                            onblur="this.style.borderColor='#dee2e6'" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label
+                                            style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Ghi
+                                            chú</label>
+                                        <textarea id="checkoutNotes" placeholder="Ghi chú thêm cho đơn hàng..."
+                                            style="width:100%;padding:10px 14px;border:1.5px solid #dee2e6;border-radius:8px;font-family:inherit;font-size:13px;outline:none;resize:vertical;min-height:70px;transition:border-color .2s"
+                                            onfocus="this.style.borderColor='#198754'"
+                                            onblur="this.style.borderColor='#dee2e6'"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Summary & Payment -->
+                        <div class="col-lg-5">
+                            <div class="checkout-card mb-4">
+                                <h4 class="checkout-card-title">Tóm tắt đơn hàng</h4>
+                                <div class="checkout-summary">
+                                    <div class="summary-line">
+                                        <span>Tổng tiền hàng:</span>
+                                        <span id="checkoutSubtotal">0đ</span>
+                                    </div>
+                                    <div class="summary-line">
+                                        <span>Phí vận chuyển:</span>
+                                        <span id="checkoutShipping">0đ</span>
+                                    </div>
+                                    <div class="summary-line free-shipping-note" id="freeShippingNote">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <span>Mua thêm sản phẩm để được Freeship (>5 món)</span>
+                                    </div>
+                                    <hr>
+                                    <div class="summary-line total">
+                                        <span>Tổng thanh toán:</span>
+                                        <span id="checkoutTotal">0đ</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="checkout-card">
+                                <h4 class="checkout-card-title">Phương thức thanh toán</h4>
+                                <div class="payment-methods-grid">
+                                    <label class="checkout-payment-option">
+                                        <input type="radio" name="checkoutPayment" value="visa" checked>
+                                        <div class="method-box"><i class="fab fa-cc-visa"></i><span>Visa</span></div>
+                                    </label>
+                                    <label class="checkout-payment-option">
+                                        <input type="radio" name="checkoutPayment" value="mastercard">
+                                        <div class="method-box"><i
+                                                class="fab fa-cc-mastercard"></i><span>MasterCard</span></div>
+                                    </label>
+                                    <label class="checkout-payment-option">
+                                        <input type="radio" name="checkoutPayment" value="momo">
+                                        <div class="method-box">
+                                            <img src="../Data/Images/unnamed.png" alt="Momo"
+                                                style="width: 24px; height: 24px; object-fit: contain;">
+                                            <span>Ví MoMo</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                <button class="btn btn-dark w-100 rounded-pill py-3 fw-bold mt-4" id="confirmOrderBtn">
+                                    XÁC NHẬN ĐẶT HÀNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../JavaScript/Core/Supabase-client.js"></script>
+    <script src="../JavaScript/Core/section-loader.js"></script>
+    <script src="../JavaScript/Core/lazy-load.js"></script>
+    <script src="../JavaScript/Data/language-data.js"></script>
+    <script src="../JavaScript/Data/car-data.js"></script>
+    <script src="../JavaScript/Data/scooter-data.js"></script>
+    <script src="../JavaScript/Components/navbar.js"></script>
+    <script src="../JavaScript/Components/mega-menu.js"></script>
+    <script src="../JavaScript/Components/cart.js"></script>
+    <script src="../JavaScript/Pages/featured-carousel.js"></script>
+    <script src="../JavaScript/Pages/accessories-render.js"></script>
+    <script src="../JavaScript/Pages/history.js"></script>
+    <script src="../JavaScript/Pages/charging-station.js"></script>
+    <script src="../JavaScript/Pages/news.js"></script>
+    <script src="../JavaScript/Pages/chatbot.js"></script>
+    <script src="../JavaScript/Pages/charging.js"></script>
+    <script src="../JavaScript/Components/hero-banner.js"></script>
+    <script src="../JavaScript/Components/popup.js"></script>
+    <script src="../JavaScript/Core/main.js"></script>
+    <script src="../JavaScript/Pages/warranty-flipbook.js"></script>
+
+</body>
+
+</html>

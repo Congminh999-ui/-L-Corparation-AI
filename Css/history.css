@@ -1,0 +1,227 @@
+/* ============================================================
+   history.css — L-Corparation History Section Plugin
+   Tách từ history.js (injectStyles)
+   ============================================================ */
+
+/* ── SECTION ── */
+#history-section-root {
+    background: #fff;
+    padding: 72px 0 0;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+}
+
+.hs-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+/* ── HEADING ── */
+.hs-heading {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.hs-heading h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 300;
+    color: #111;
+    letter-spacing: -0.01em;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.hs-heading h2::after {
+    display: none;
+}
+
+/* ── CARDS GRID ── */
+.hs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    overflow: hidden;
+}
+
+/* ── SINGLE CARD ── */
+.hs-card {
+    padding: 0 20px 32px;
+    border-right: 1px solid #e8e8e8;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    cursor: default;
+}
+
+.hs-card:last-child {
+    border-right: none;
+}
+
+.hs-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── CARD IMAGE ── */
+.hs-card-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #f2f2f2;
+    margin-bottom: 20px;
+}
+
+.hs-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.hs-card:hover .hs-card-img img {
+    transform: scale(1.04);
+}
+
+.hs-card-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 0.78rem;
+}
+
+/* ── CARD DATE & TEXT ── */
+.hs-card-date {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #111;
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+}
+
+.hs-card-desc {
+    font-size: 0.83rem;
+    color: #555;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* ── YEAR TIMELINE BAR ── */
+.hs-timeline-bar {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    padding: 0 20px;
+    border-top: 1px solid #e0e0e0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.hs-timeline-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.hs-year-item {
+    flex: 1;
+    min-width: 60px;
+    padding: 14px 0;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #aaa;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+    white-space: nowrap;
+}
+
+.hs-year-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    transition: background 0.2s;
+}
+
+.hs-year-item.active {
+    color: #111;
+}
+
+.hs-year-item.active::before {
+    background: #1a56db;
+}
+
+.hs-year-item:hover {
+    color: #333;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+    .hs-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hs-card:nth-child(3) {
+        border-right: none;
+    }
+
+    .hs-card:nth-child(4) {
+        border-right: 1px solid #e8e8e8;
+    }
+
+    .hs-card:nth-child(6) {
+        border-right: none;
+    }
+}
+
+@media (max-width: 700px) {
+    #history-section-root {
+        padding: 48px 0 0;
+    }
+
+    .hs-wrap {
+        padding: 0 16px;
+    }
+
+    .hs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hs-card {
+        border-right: 1px solid #e8e8e8;
+        padding: 0 12px 24px;
+    }
+
+    .hs-card:nth-child(even) {
+        border-right: none;
+    }
+
+    .hs-card:nth-child(odd) {
+        border-right: 1px solid #e8e8e8;
+    }
+}
+
+@media (max-width: 420px) {
+    .hs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hs-card {
+        border-right: none;
+        border-bottom: 1px solid #e8e8e8;
+        padding: 0 0 20px;
+        margin-bottom: 20px;
+    }
+
+    .hs-card:last-child {
+        border-bottom: none;
+    }
+}
