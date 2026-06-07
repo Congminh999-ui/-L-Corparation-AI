@@ -1,12 +1,16 @@
 /**
  * admin-sales-insight.js
  * Phân tích sản phẩm bán chậm + trích xuất insight từ chat_history
+ * v2.0 — Gọi qua server /admin-ai, không dùng API key trực tiếp
  */
 
 window.InsightModule = {
 
+    _SERVER: 'https://l-corparation-ai.onrender.com',
+    _TOKEN: 'admin-lcorp-2024', // TODO: ADD_API_KEY
+
     async analyze() {
-        const results = { slowProducts: [], insights: [], errors: [] };
+        const results = { slowProducts: [], insights: {}, errors: [] };
         const now = new Date();
         const thirtyDaysAgo = new Date(now - 30 * 24 * 3600 * 1000).toISOString();
 
@@ -30,7 +34,7 @@ window.InsightModule = {
             results.errors.push('Lỗi phân tích sản phẩm: ' + e.message);
         }
 
-        // --- 2. Trích insight từ chat_history (50 tin nhắn gần nhất) ---
+        // --- 2. Trích insight từ chat_history qua server ---
         try {
             const { data: messages, error } = await window.db
                 .from('chat_history')
@@ -44,36 +48,21 @@ window.InsightModule = {
             if (messages && messages.length > 0) {
                 const msgText = messages.map(m => `- "${m.content}"`).join('\n');
 
-                const aiResponse = await fetch('https://api.anthropic.com/v1/messages', {
+                const aiResponse = await fetch(this._SERVER + '/admin-ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'claude-sonnet-4-20250514',
-                        max_tokens: 1000,
-                        system: `Bạn là chuyên gia phân tích hành vi khách hàng cho cửa hàng xe máy điện.
-Phân tích các câu hỏi/tin nhắn của khách và trả về JSON hợp lệ (không có backtick):
-{
-  "top_interests": ["loại xe/tính năng khách hay hỏi nhất", ...],
-  "use_cases": ["đi làm", "gia đình", "chạy xe ôm", "other"],
-  "pain_points": ["vấn đề khách hay phàn nàn hoặc lo lắng", ...],
-  "summary": "2-3 câu tóm tắt xu hướng chính"
-}`,
-                        messages: [{ role: 'user', content: `Phân tích các tin nhắn sau:\n${msgText}` }]
+                        task: 'analyze_chat',
+                        messages: msgText,
+                        token: this._TOKEN
                     })
                 });
 
                 if (aiResponse.ok) {
-                    const aiData = await aiResponse.json();
-                    const rawText = aiData.content?.[0]?.text || '{}';
-                    try {
-                        const cleaned = rawText.replace(/```json|```/g, '').trim();
-                        const parsed = JSON.parse(cleaned);
-                        results.insights = parsed;
-
-                        // Lưu vào customer_insights
-                        await this._saveInsights(messages, parsed);
-                    } catch (_) {
-                        results.insights = { summary: rawText };
+                    const { result } = await aiResponse.json();
+                    if (result) {
+                        results.insights = result;
+                        await this._saveInsights(messages, result);
                     }
                 }
             }
@@ -121,10 +110,10 @@ Phân tích các câu hỏi/tin nhắn của khách và trả về JSON hợp l�
         // Insights từ chat
         const ins = results.insights;
         if (ins && Object.keys(ins).length) {
-            html += '<hr style="border-color:#333;margin:10px 0">';
+            html += '<hr style="border-color:#ddd;margin:10px 0">';
             html += '<b>🧠 Insight từ chat khách hàng:</b><br>';
 
-            if (ins.summary) html += `<p style="color:#aaa;font-size:13px">${ins.summary}</p>`;
+            if (ins.summary) html += `<p style="color:#666;font-size:13px">${ins.summary}</p>`;
 
             const insCards = [];
             if (ins.top_interests?.length) insCards.push({ label: 'Quan tâm nhiều nhất', value: ins.top_interests.join(', ') });
