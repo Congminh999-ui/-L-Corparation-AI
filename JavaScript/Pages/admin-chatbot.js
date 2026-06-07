@@ -269,7 +269,7 @@
   `);
 
   /* ── 3. STATE ──────────────────────────────────────────── */
-  const SERVER_URL = 'https://l-corparation-ai.onrender.com/chat';
+  const SERVER_URL = 'https://l-corparation-ai.onrender.com/admin-chat';
   const SESSION_ID = (() => {
     const key = 'acbot_sid';
     let sid = sessionStorage.getItem(key);
