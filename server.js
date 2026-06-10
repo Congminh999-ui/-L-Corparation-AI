@@ -13,6 +13,7 @@ const rateLimit = require('express-rate-limit');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
+app.set('trust proxy', 1); // ✅ FIX: Cần thiết khi deploy trên Render/Heroku/proxy
 app.use(express.json());
 const path = require('path');
 app.use(express.static(path.join(__dirname)));
@@ -22,7 +23,7 @@ app.use(express.static(path.join(__dirname)));
 // ============================================================
 const supabase = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY   // dùng service key (server-side, không expose ra client)
+    process.env.SUPABASE_KEY
 );
 
 // ============================================================
@@ -74,7 +75,7 @@ const chatLimiter = rateLimit({
 app.use(generalLimiter);
 
 // ============================================================
-// SESSION STORE (RAM — dùng để giữ context Groq trong phiên)
+// SESSION STORE
 // ============================================================
 const sessions = new Map();
 const MAX_MSGS = 20;
@@ -102,10 +103,9 @@ function getSession(sessionId) {
 }
 
 // ============================================================
-// LẤY DỮ LIỆU TỪ SUPABASE — BUILD SYSTEM PROMPT ĐỘNG
+// SYSTEM PROMPT ĐỘNG TỪ SUPABASE
 // ============================================================
 async function buildSystemPrompt() {
-    // Lấy xe ô tô
     const { data: cars } = await supabase
         .from('products')
         .select('name, price, range_km, seats, power_kw, acceleration')
@@ -113,7 +113,6 @@ async function buildSystemPrompt() {
         .eq('is_active', true)
         .order('price', { ascending: true });
 
-    // Lấy xe máy
     const { data: scooters } = await supabase
         .from('products')
         .select('name, price, range_km, top_speed, charge_time')
@@ -121,12 +120,10 @@ async function buildSystemPrompt() {
         .eq('is_active', true)
         .order('price', { ascending: true });
 
-    // Format bảng xe ô tô
     const carTable = (cars || []).map(c =>
         `| ${c.name} | ${formatPrice(c.price)} | ${c.range_km ?? '?'}km | ${c.seats ?? '?'} chỗ | ${c.power_kw ?? '?'}kW | ${c.acceleration ?? '?'} |`
     ).join('\n');
 
-    // Format danh sách xe máy
     const scooterList = (scooters || []).map(s =>
         `- ${s.name}: ${formatPrice(s.price)} | ${s.range_km ?? '?'}km | Max ${s.top_speed ?? '?'}km/h | Sạc ${s.charge_time ?? '?'}`
     ).join('\n');
@@ -171,7 +168,6 @@ function formatPrice(price) {
     return (price / 1_000_000).toFixed(0) + ' triệu';
 }
 
-// Cache system prompt 5 phút để không gọi Supabase mỗi request
 let cachedPrompt = null;
 let cachedPromptTime = 0;
 const PROMPT_TTL = 5 * 60 * 1000;
@@ -186,25 +182,20 @@ async function getSystemPrompt() {
 }
 
 // ============================================================
-// LƯU LỊCH SỬ CHAT VÀO SUPABASE
-// Bảng: chat_history (tạo theo SQL bên dưới)
+// LƯU LỊCH SỬ CHAT
 // ============================================================
 async function saveChatHistory({ sessionId, role, content }) {
     try {
-        await supabase.from('chat_history').insert({
-            session_id: sessionId,
-            role,
-            content,
-        });
+        await supabase.from('chat_history').insert({ session_id: sessionId, role, content });
     } catch (err) {
         console.warn('[ChatHistory] Không lưu được:', err.message);
     }
 }
 
 // ============================================================
-// POST /chat — Streaming SSE
+// HANDLER CHUNG — dùng lại cho cả /chat và /admin-chat
 // ============================================================
-app.post('/chat', chatLimiter, async (req, res) => {
+async function handleChat(req, res, isAdmin = false) {
     const { message, sessionId } = req.body;
 
     if (!message?.trim()) {
@@ -214,13 +205,11 @@ app.post('/chat', chatLimiter, async (req, res) => {
         return res.status(400).json({ reply: 'Session không hợp lệ!' });
     }
 
-    const session = getSession(sessionId);
+    const storeSessionId = isAdmin ? 'admin_' + sessionId : sessionId;
+    const session = getSession(storeSessionId);
     session.history.push({ role: 'user', content: message.trim() });
+    saveChatHistory({ sessionId: storeSessionId, role: 'user', content: message.trim() });
 
-    // Lưu tin nhắn user vào Supabase (không chờ)
-    saveChatHistory({ sessionId, role: 'user', content: message.trim() });
-
-    // Setup SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -229,7 +218,10 @@ app.post('/chat', chatLimiter, async (req, res) => {
     const send = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`);
 
     try {
-        const systemPrompt = await getSystemPrompt();
+        const basePrompt = await getSystemPrompt();
+        const systemPrompt = isAdmin
+            ? basePrompt + `\n\n=== CHẾ ĐỘ ADMIN ===\nBạn đang hỗ trợ admin nội bộ. Có thể trả lời các câu hỏi về tồn kho, doanh thu, đơn hàng, khách hàng và vận hành hệ thống.`
+            : basePrompt;
 
         const response = await fetch(GROQ_URL, {
             method: 'POST',
@@ -269,25 +261,17 @@ app.post('/chat', chatLimiter, async (req, res) => {
                 if (!line.startsWith('data: ')) continue;
                 const raw = line.slice(6).trim();
                 if (raw === '[DONE]') continue;
-
                 try {
                     const json = JSON.parse(raw);
                     const delta = json.choices?.[0]?.delta?.content;
-                    if (delta) {
-                        fullReply += delta;
-                        send({ delta });
-                    }
-                } catch { /* bỏ qua dòng lỗi parse */ }
+                    if (delta) { fullReply += delta; send({ delta }); }
+                } catch { /* bỏ qua */ }
             }
         }
 
-        // Lưu reply của bot vào Supabase
-        saveChatHistory({ sessionId, role: 'assistant', content: fullReply });
-
+        saveChatHistory({ sessionId: storeSessionId, role: 'assistant', content: fullReply });
         session.history.push({ role: 'assistant', content: fullReply });
-        if (session.history.length > MAX_MSGS) {
-            session.history = session.history.slice(-MAX_MSGS);
-        }
+        if (session.history.length > MAX_MSGS) session.history = session.history.slice(-MAX_MSGS);
 
         send({ done: true });
 
@@ -297,17 +281,19 @@ app.post('/chat', chatLimiter, async (req, res) => {
     }
 
     res.end();
-});
+}
 
 // ============================================================
-// GET /history/:sessionId — Lấy lịch sử chat từ Supabase
+// ROUTES
 // ============================================================
+app.post('/chat', chatLimiter, (req, res) => handleChat(req, res, false));
+app.post('/admin-chat', chatLimiter, (req, res) => handleChat(req, res, true));  // ✅ FIX: Route admin riêng
+
 app.get('/history/:sessionId', async (req, res) => {
     const { sessionId } = req.params;
     if (!sessionId || sessionId.length > 64) {
         return res.status(400).json({ error: 'Session không hợp lệ' });
     }
-
     const { data, error } = await supabase
         .from('chat_history')
         .select('role, content, created_at')
@@ -319,15 +305,8 @@ app.get('/history/:sessionId', async (req, res) => {
     res.json({ history: data });
 });
 
-// ============================================================
-// GET /health
-// ============================================================
 app.get('/health', (_req, res) => {
-    res.json({
-        status: 'ok',
-        sessions: sessions.size,
-        uptime: Math.floor(process.uptime()) + 's'
-    });
+    res.json({ status: 'ok', sessions: sessions.size, uptime: Math.floor(process.uptime()) + 's' });
 });
 
 // ============================================================

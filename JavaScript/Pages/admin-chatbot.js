@@ -185,6 +185,17 @@
     .adc-row span  { color:#6b7280; font-size:12px; }
     .adc-row strong{ color:#1a1a1a; font-size:13px; text-align:right; }
 
+    /* ── Warming up notice ── */
+    .acb-warmup {
+      display: none;
+      background: #fffbeb; border: 1px solid #fde68a;
+      border-radius: 8px; padding: 8px 14px;
+      font-size: .72rem; color: #92400e;
+      margin: 0 20px 8px; text-align: center;
+      animation: acbMsgIn .3s ease both;
+    }
+    .acb-warmup.show { display: block; }
+
     /* ── Input area ── */
     .acb-input-area {
       padding: 14px 20px 14px;
@@ -256,6 +267,9 @@
       </div>
 
       <div class="acb-quick" id="chatQuickActions"></div>
+      <div class="acb-warmup" id="chatWarmup">
+        ⏳ Server đang khởi động (cold start ~30-60s), vui lòng chờ một chút...
+      </div>
       <div class="acb-messages" id="chatMessages"></div>
 
       <div class="acb-input-area">
@@ -269,6 +283,7 @@
   `);
 
   /* ── 3. STATE ──────────────────────────────────────────── */
+  // ✅ FIX: Đúng endpoint /admin-chat khớp với server.js
   const SERVER_URL = 'https://l-corparation-ai.onrender.com/admin-chat';
   const SESSION_ID = (() => {
     const key = 'acbot_sid';
@@ -287,6 +302,7 @@
   const clearBtn = document.getElementById('chatClearBtn');
   const minimizeBtn = document.getElementById('chatMinimizeBtn');
   const quickEl = document.getElementById('chatQuickActions');
+  const warmupEl = document.getElementById('chatWarmup');
 
   let isOpen = false;
   let isBusy = false;
@@ -397,15 +413,41 @@
     });
   }
 
-  /* ── 6. API CALL — dùng cùng server với user chatbot ──── */
+  /* ── 6. API CALL — với timeout dài cho Render cold start ── */
   async function callAI(userText) {
-    const response = await fetch(SERVER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: userText, sessionId: SESSION_ID }),
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response;
+    // ✅ FIX: AbortController với timeout 65s để xử lý Render cold start (~50s)
+    const controller = new AbortController();
+    const TIMEOUT_MS = 65000;
+    let warmupTimer = null;
+
+    // Hiện thông báo "đang khởi động" sau 5 giây nếu chưa có response
+    warmupTimer = setTimeout(() => {
+      warmupEl.classList.add('show');
+    }, 5000);
+
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+    try {
+      const response = await fetch(SERVER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText, sessionId: SESSION_ID }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      clearTimeout(warmupTimer);
+      warmupEl.classList.remove('show');
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response;
+
+    } catch (err) {
+      clearTimeout(timeoutId);
+      clearTimeout(warmupTimer);
+      warmupEl.classList.remove('show');
+      throw err;
+    }
   }
 
   /* ── 7. SEND MESSAGE ───────────────────────────────────── */
@@ -450,7 +492,7 @@
       }
     }
 
-    // Gọi Anthropic API với streaming
+    // Gọi AI server với streaming
     showTyping();
     try {
       const response = await callAI(userText);
@@ -500,8 +542,15 @@
 
     } catch (err) {
       hideTyping();
+      warmupEl.classList.remove('show');
       console.error('[AdminChatbot]', err);
-      appendMessage('bot', '⚠️ Không thể kết nối máy chủ AI. Vui lòng thử lại sau hoặc gọi **1800-1234**!');
+
+      // ✅ FIX: Thông báo lỗi thân thiện hơn, phân biệt timeout vs lỗi khác
+      const isTimeout = err.name === 'AbortError';
+      appendMessage('bot', isTimeout
+        ? '⏳ Server mất quá nhiều thời gian để phản hồi. Render free tier có thể đang khởi động lại — vui lòng thử lại sau 30 giây!'
+        : '⚠️ Không thể kết nối máy chủ AI. Vui lòng thử lại sau hoặc gọi **1800-1234**!'
+      );
     }
 
     isBusy = false;
@@ -525,7 +574,6 @@
   function openChat() {
     isOpen = true;
     win.classList.add('open');
-    // Xóa active tất cả nav-item trước, rồi chỉ set chat
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-item[data-page="chat"]').forEach(el => el.classList.add('active'));
 
@@ -546,17 +594,14 @@
     document.querySelectorAll('.nav-item[data-page="chat"]').forEach(el => el.classList.remove('active'));
   }
 
-  /* ── Hook: đóng chat khi click bất kỳ nav-item nào khác ── */
+  /* ── Hook: đóng chat khi click nav-item khác ── */
   document.addEventListener('click', (e) => {
     if (!isOpen) return;
     const navItem = e.target.closest('.nav-item');
     if (!navItem) return;
     const page = navItem.dataset.page;
-    // Đóng chat nếu click nav-item không phải "chat"
-    if (!page || page !== 'chat') {
-      closeChat();
-    }
-  }, true); // capture phase
+    if (!page || page !== 'chat') closeChat();
+  }, true);
 
   /* ── 10. EVENTS ────────────────────────────────────────── */
   minimizeBtn.addEventListener('click', closeChat);
